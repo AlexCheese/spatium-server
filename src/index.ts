@@ -128,6 +128,7 @@ server.on('connection', (socket) => {
             case '7.a': // chat
                 break;
             case '#.r': // reset
+                gameState.moves = [];
                 game = new Game(gameString);
                 break;
             case '#.d': // set data
