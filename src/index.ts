@@ -1,9 +1,9 @@
 import { WebSocket, WebSocketServer } from 'ws';
 import { Game, Move } from 'hika';
 
-const gameString = '8,8,2,1 RNBQKBNR,PPPPPPPP,,,,,pppppppp,rnbqkbnr';
-const game = new Game(gameString);
-const gameState: {[key: string]: any, moves: string[]} = {
+let gameString = '4,4,2,2 RNBQ,PPPP/KBNR,PPPP|,,pppp,rnbq/,,pppp,kbnr';
+let game = new Game(gameString);
+let gameState: {[key: string]: any, moves: string[]} = {
     id: 'ae',
     status: 0,
     initialState: gameString,
@@ -112,6 +112,12 @@ server.on('connection', (socket) => {
                 }
                 break;
             case '4.a': // state
+                sendPayload(socket, {
+                    o: '4.b',
+                    d: {
+                        data: gameState
+                    }
+                });
                 break;
             case '5.a': // draw
                 break;
@@ -120,6 +126,15 @@ server.on('connection', (socket) => {
             case '6.a': // resign
                 break;
             case '7.a': // chat
+                break;
+            case '#.r': // reset
+                game = new Game(gameString);
+                break;
+            case '#.d': // set data
+                gameString = payload.d.data;
+                gameState.initialState = gameString;
+                gameState.moves = [];
+                game = new Game(gameString);
                 break;
         }
     });
