@@ -1,5 +1,7 @@
 import { WebSocket, WebSocketServer } from 'ws';
+import { createServer } from 'https';
 import { Game, Move } from 'hika';
+import { readFileSync } from 'fs';
 
 let gameString = '4,4,2,2 RNBQ,PPPP/KBNR,PPPP|,,pppp,rnbq/,,pppp,kbnr';
 let game = new Game(gameString);
@@ -10,8 +12,21 @@ let gameState: {[key: string]: any, moves: string[]} = {
     moves: []
 }
 
+let ssl_cert;
+let ssl_key;
+try {
+    ssl_cert = readFileSync(process.env.SSL_CERT_PATH as string);
+    ssl_key = readFileSync(process.env.SSL_KEY_PATH as string);
+} catch {
+    throw Error("SSL error");
+}
 
-const server = new WebSocketServer({ port: 9024 });
+const httpsServer = createServer({
+    cert: ssl_cert,
+    key: ssl_key
+});
+
+const server = new WebSocketServer({ server: httpsServer });
 
 type Payload = {
     o: string,
@@ -142,4 +157,5 @@ server.on('connection', (socket) => {
 
 });
 
+httpsServer.listen(process.env.PORT || 9024);
 console.log("lets gooo");
