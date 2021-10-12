@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/AlexCheese/spatium-server#readme",
   "dependencies": {
-    "hika": "^1.1.3",
+    "hika": "^1.1.5",
     "ws": "^8.2.3"
   },
   "devDependencies": {
